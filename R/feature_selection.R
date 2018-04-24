@@ -152,7 +152,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
 
     cv = do.call('cv.glmnet', params_glmnet)
 
-    pr = predict(cv, type = 'coefficients', s = cv$lambda.min)
+    pr = predict(cv, type = 'coefficients', s = cv$lambda.1se)
 
     if (is.factor(y)) {                    # in case of classification glmnet returns importance in form of a sparse matrix
 
@@ -498,14 +498,14 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
       form = as.formula(paste0(paste0('y ~ '), paste(colnames(X), collapse = '+')))
 
       params_ranger[['formula']] = form
-      
+
       #dat = data.frame(y = y, X)}
     }
-    
+
     dat = cbind(y = y, X)                    # include y in the data so that it works with or without the 'dependent.variable.name'
 
     # else {
-    # 
+    #
     #   dat = X
     # }
 
@@ -571,14 +571,14 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
         form = as.formula(paste0(paste0('y ~ '), paste(colnames(X_folds), collapse = '+')))
 
         params_ranger[['formula']] = form
-        
+
         #dat = data.frame(y = y_folds, X_folds)}
       }
-      
+
       dat = cbind(y = y_folds, X_folds)                  # include y in the data so that it works with or without the 'dependent.variable.name'
- 
+
       # else {
-      # 
+      #
       #   dat = X_folds
       # }
 
