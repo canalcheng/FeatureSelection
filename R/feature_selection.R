@@ -288,7 +288,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
 
       cv = do.call('cv.glmnet', params_glmnet)
 
-      pr = predict(cv, type = 'coefficients', s = cv$lambda.min)
+      pr = predict(cv, type = 'coefficients', s = cv$lambda.1se)
 
       if (is.factor(y)) {                                            # in case of classification glmnet returns importance in form of a sparse matrix
 
