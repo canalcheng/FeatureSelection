@@ -24,7 +24,7 @@
 #' @export
 #' @importFrom glmnet cv.glmnet
 #' @importFrom dplyr group_by mutate_each summarize summarize_each funs n %>%
-#' @importFrom doMC registerDoMC
+#' @importFrom doParallel registerDoParallel
 #' @importFrom xgboost xgb.DMatrix xgb.train xgb.importance
 #' @importFrom ranger ranger
 #' @importFrom stats as.formula coefficients cor median na.omit predict
@@ -199,7 +199,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
     if (params_glmnet$parallel == TRUE && !is.null(cores_glmnet)) {
 
       suppressMessages(library(doParallel))
-      registerDoParallel(cores = cores_glmnet)
+      registerDoParallel(makeCluster(cores_glmnet,type="SOCK"))
     }
 
     if (verbose == TRUE) {
@@ -376,7 +376,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
     params_xgboost[['watchlist']] = list(train = dtrain)
     params_xgboost[['data']] = dtrain
 
-    bst = suppressWarnings(do.call('xgb.train', params_xgboost))
+    bst = suppressWarnings(do.call('xgb.train', params_xgboost, nthread = cores_glmnet))
 
     tbl1 <- data.frame(xgb.importance(colnames(X), model = bst))
 
@@ -511,7 +511,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
 
     params_ranger[['data']] = dat
 
-    fit = do.call('ranger', params_ranger)
+    fit = do.call('ranger', params_ranger, num.threads = cores_glmnet)
 
     tbl_x = data.frame(names(fit$variable.importance), as.vector(fit$variable.importance))
     colnames(tbl_x) = c('Feature', params_ranger$importance)
