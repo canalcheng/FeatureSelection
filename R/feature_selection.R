@@ -376,7 +376,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
     params_xgboost[['watchlist']] = list(train = dtrain)
     params_xgboost[['data']] = dtrain
 
-    bst = suppressWarnings(do.call('xgb.train', params_xgboost, nthread = cores_glmnet))
+    bst = suppressWarnings(do.call('xgb.train', params_xgboost))
 
     tbl1 <- data.frame(xgb.importance(colnames(X), model = bst))
 
@@ -511,7 +511,7 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
 
     params_ranger[['data']] = dat
 
-    fit = do.call('ranger', params_ranger, num.threads = cores_glmnet)
+    fit = do.call('ranger', params_ranger)
 
     tbl_x = data.frame(names(fit$variable.importance), as.vector(fit$variable.importance))
     colnames(tbl_x) = c('Feature', params_ranger$importance)
