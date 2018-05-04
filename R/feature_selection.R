@@ -198,8 +198,8 @@ feature_selection = function(X, y, method = NULL, params_glmnet = NULL, params_x
 
     if (params_glmnet$parallel == TRUE && !is.null(cores_glmnet)) {
 
-      suppressMessages(library(doMC))
-      registerDoMC(cores = cores_glmnet)
+      suppressMessages(library(doParallel))
+      registerDoParallel(cores = cores_glmnet)
     }
 
     if (verbose == TRUE) {
